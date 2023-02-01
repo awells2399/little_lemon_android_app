@@ -9,13 +9,17 @@ import androidx.navigation.compose.composable
 
 
 @Composable
-fun Navigation(navController: NavHostController, userPrefs: SharedPreferences) {
+fun Navigation(
+    navController: NavHostController,
+    userPrefs: SharedPreferences,
+    items: List<MenuItemRoom>
+) {
 
     var startDestination = if (userPrefs.contains("First Name")) Home.route else Onboarding.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Home.route) {
-            Home(navController, userPrefs)
+            Home(navController, userPrefs, items)
         }
         composable(Profile.route) {
             Profile(navController = navController, userPrefs = userPrefs)
