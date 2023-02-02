@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -24,33 +25,54 @@ fun Hero() {
     val restaurantCity = stringResource(id = R.string.restaurant_city)
 
     Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.primary)
     ) {
-        Column() {
-            Text(text = "$restaurantName", color = MaterialTheme.colors.onPrimary)
-            Text(text = "$restaurantCity", color = Color.White)
-            Row() {
-                Text(
-                    text = "$restaurantDescription",
-                    color = Color.White,
-                    modifier = Modifier
-                        .weight(0.5f)
-                        .align(Alignment.CenterVertically)
-                )
+
+        Column(modifier = Modifier.fillMaxWidth(.9f)) {
+            Text(
+                text = restaurantName,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = MaterialTheme.typography.h1.fontSize
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(Modifier.fillMaxWidth(0.5f)) {
+                    Text(
+                        text = restaurantCity,
+                        color = Color.White,
+                        fontSize = MaterialTheme.typography.h2.fontSize,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Text(
+                        text = restaurantDescription,
+                        fontSize = MaterialTheme.typography.body1.fontSize,
+                        color = Color.White,
+                        modifier = Modifier
+
+                    )
+                }
+
                 Image(
                     painter = painterResource(id = R.drawable.hero_image),
                     contentDescription = "Hero Food Picture",
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(150.dp)
-                        .width(60.dp)
+                        .height(150.dp)
+                        .width(140.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .padding(top = 5.dp)
                 )
             }
             TextField(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
+                    .fillMaxWidth()
+                    .height(73.dp)
                     .padding(top = 10.dp, bottom = 10.dp)
                     .align(Alignment.CenterHorizontally),
                 value = "Enter Search Phrase",

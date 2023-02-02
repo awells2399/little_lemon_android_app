@@ -2,6 +2,7 @@ package com.example.little_lemon_android_app
 
 import android.content.SharedPreferences
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -37,6 +38,7 @@ fun Profile(navController: NavController, userPrefs: SharedPreferences) {
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(250.dp)
+                    .clickable { navController.navigate("Home") }
 
             )
         }
@@ -98,17 +100,3 @@ private fun changeProfile(input: String, userPrefs: SharedPreferences, key: Stri
     userPrefs.edit().putString(key, input)
 }
 
-//@Preview
-//@Composable
-//fun ProfilePreview() {
-//     val sharedPreferences by lazy {
-//        getsSharedPreferences("LittleLemon", ComponentActivity.MODE_PRIVATE)
-//    }
-//
-//    sharedPreferences.edit().putString("First Name", firstName).apply()
-//    sharedPreferences.edit().putString("Last Name", lastName).apply()
-//    sharedPreferences.edit().putString("Email", email).apply()
-//
-//    var navController = rememberNavController()
-//    Profile(navController, userPrefs)
-//}

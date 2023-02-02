@@ -3,6 +3,7 @@ package com.example.little_lemon_android_app
 
 import android.content.SharedPreferences
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,15 +17,19 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 
 @Composable
 fun Home(navController: NavController, userPrefs: SharedPreferences, items: List<MenuItemRoom>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Header()
+        val context = LocalContext.current
+        Header(navController)
         Hero()
         Categories()
         LazyColumn(
@@ -47,25 +52,24 @@ fun Home(navController: NavController, userPrefs: SharedPreferences, items: List
                                 item.price,
                                 Modifier.weight(0.7f)
                             )
-                            ItemImage(item.image, Modifier.weight(0.15f))
+                            ItemImage(item.image, item.title)
                         }
                     }
                 }
             )
         }
     }
-
-
 }
 
-@Composable
-private fun ItemImage(icon: String, modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.logo),
-        contentDescription = "placeHolder",
-        modifier = modifier
-            .padding(8.dp)
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun ItemImage(imageUrl: String, title: String) {
+
+    GlideImage(
+        model = imageUrl,
+        contentDescription = title,
+        modifier = Modifier.fillMaxSize(0.3f),
     )
 }
 
@@ -88,16 +92,19 @@ private fun RestaurantDetails(
                     ContentAlpha.medium
         ) {
             Text(text = description, style = MaterialTheme.typography.body1)
-            Text(text = "$price", style = MaterialTheme.typography.body2)
+            Text(
+                text = "$$price",
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier.padding(top = 2.dp)
+            )
         }
 
     }
 }
 
 @Composable
-fun Header() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
+fun Header(navController: NavController) {
+    Box(
         modifier = Modifier
             .height(60.dp)
             .fillMaxWidth()
@@ -110,7 +117,21 @@ fun Header() {
             modifier = Modifier
                 .size(200.dp)
                 .padding(top = 5.dp)
-                .align(Alignment.CenterVertically)
+                .align(Alignment.Center)
+
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.profile_pic),
+            contentDescription = "Profile Picture",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(50.dp)
+                .align(Alignment.CenterEnd)
+                .padding(top = 5.dp, end = 10.dp)
+                .clickable { navController.navigate("Profile") }
+
+
         )
     }
 
@@ -120,7 +141,7 @@ fun Header() {
 fun Categories() {
     Column(modifier = Modifier
         .fillMaxWidth(0.9f)
-        .padding()
+        .height(90.dp)
         .drawBehind {
             val borderSize = 2.dp.toPx()
             drawLine(
@@ -133,7 +154,7 @@ fun Categories() {
 
         Text(text = "ORDER FOR DELIVERY!", modifier = Modifier.padding(top = 20.dp, bottom = 20.dp))
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
