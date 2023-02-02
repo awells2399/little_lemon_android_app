@@ -18,7 +18,6 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    var navController = rememberNavController()
+                    val navController = rememberNavController()
                     Navigation(navController, sharedPreferences, databaseMenuItems)
 
                 }

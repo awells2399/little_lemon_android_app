@@ -1,19 +1,15 @@
 package com.example.little_lemon_android_app
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,20 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.KeyboardType.Companion.Email
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.little_lemon_android_app.ui.theme.Little_lemon_android_appTheme
 
 @Composable
 fun Onboarding(navController: NavController, userPrefs: SharedPreferences) {
-    var firstName = rememberSaveable { mutableStateOf("") }
-    var lastName = rememberSaveable { mutableStateOf("") }
-    var email = rememberSaveable { mutableStateOf("") }
+    val firstName = rememberSaveable { mutableStateOf("") }
+    val lastName = rememberSaveable { mutableStateOf("") }
+    val email = rememberSaveable { mutableStateOf("") }
 
 
 
@@ -127,7 +119,7 @@ fun Context.validateRegistration(
     navController: NavController
 ) {
     //simple validation for now TODO: Create form composable and validators
-    if (firstName.isNullOrBlank() || lastName.isBlank() || email.isBlank()) {
+    if (firstName.isBlank() || lastName.isBlank() || email.isBlank()) {
         Toast.makeText(
             this,
             "Registration unsuccessful. Please enter all data.",

@@ -15,11 +15,11 @@ fun Navigation(
     items: List<MenuItemRoom>
 ) {
 
-    var startDestination = if (userPrefs.contains("First Name")) Home.route else Onboarding.route
+    val startDestination = if (userPrefs.contains("First Name")) Home.route else Onboarding.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Home.route) {
-            Home(navController, userPrefs, items)
+            Home(navController, items)
         }
         composable(Profile.route) {
             Profile(navController = navController, userPrefs = userPrefs)

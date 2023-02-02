@@ -1,7 +1,6 @@
 package com.example.little_lemon_android_app
 
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,15 +8,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,38 +23,55 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
 @Composable
-fun Home(navController: NavController, userPrefs: SharedPreferences, items: List<MenuItemRoom>) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        val context = LocalContext.current
-        Header(navController)
-        Hero()
-        Categories()
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(top = 20.dp)
-        ) {
-            items(
-                items = items,
-                itemContent = { item ->
+fun Home(navController: NavController, items: List<MenuItemRoom>) {
+    val searchPhrase = remember {
+        mutableStateOf("")
+    }
 
-                    Card(elevation = 4.dp, modifier = Modifier.padding(8.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(8.dp)
-                        ) {
-                            RestaurantDetails(
-                                item.title,
-                                item.description,
-                                item.price,
-                                Modifier.weight(0.7f)
-                            )
-                            ItemImage(item.image, item.title)
-                        }
+    val category = remember {
+        mutableStateOf("")
+    }
+    var itemsList = items
+
+
+    if (searchPhrase.value.isNotEmpty()) {
+        itemsList = items.filter { it.title.contains(searchPhrase.value, ignoreCase = true) }
+    }
+
+    if (category.value.isNotEmpty()) {
+        itemsList = itemsList.filter { it.category == category.value }
+    }
+
+    LazyColumn(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        item { Header(navController) }
+        item { Hero(searchPhrase) }
+        item { Categories(category, searchPhrase) }
+
+
+
+        items(
+            items = itemsList,
+            itemContent = { item ->
+
+                Card(elevation = 4.dp, modifier = Modifier.padding(8.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        DishDetails(
+                            item.title,
+                            item.description,
+                            item.price,
+                            Modifier.weight(0.7f)
+                        )
+                        ItemImage(item.image, item.title)
                     }
                 }
-            )
-        }
+            }
+        )
     }
 }
 
@@ -71,10 +85,11 @@ private fun ItemImage(imageUrl: String, title: String) {
         contentDescription = title,
         modifier = Modifier.fillMaxSize(0.3f),
     )
+
 }
 
 @Composable
-private fun RestaurantDetails(
+private fun DishDetails(
     title: String,
     description: String,
     price: Double,
@@ -138,10 +153,16 @@ fun Header(navController: NavController) {
 }
 
 @Composable
-fun Categories() {
+fun Categories(cat: MutableState<String>, phrase: MutableState<String>) {
+
+    var activeCategory by remember {
+        mutableStateOf("")
+    }
+
     Column(modifier = Modifier
         .fillMaxWidth(0.9f)
-        .height(90.dp)
+        .height(120.dp)
+        .padding(bottom = 30.dp)
         .drawBehind {
             val borderSize = 2.dp.toPx()
             drawLine(
@@ -158,10 +179,21 @@ fun Categories() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+                colors = ButtonDefaults.buttonColors(backgroundColor = if (activeCategory !== Category.STARTER.cat) Color.LightGray else MaterialTheme.colors.onPrimary),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 shape = RoundedCornerShape(20.dp),
-                onClick = { /*TODO*/ }) {
+                onClick = {
+                    if (activeCategory == Category.STARTER.cat) {
+                        activeCategory = ""
+                        cat.value = ""
+                    } else {
+                        activeCategory = Category.STARTER.cat
+                        cat.value = Category.STARTER.cat
+                        phrase.value = ""
+                    }
+
+
+                }) {
                 Text(
                     color = MaterialTheme.colors.primaryVariant,
                     fontWeight = FontWeight.Bold,
@@ -170,10 +202,19 @@ fun Categories() {
             }
 
             Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+                colors = ButtonDefaults.buttonColors(backgroundColor = if (activeCategory !== Category.MAINS.cat) Color.LightGray else MaterialTheme.colors.onPrimary),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 shape = RoundedCornerShape(20.dp),
-                onClick = { /*TODO*/ }) {
+                onClick = {
+                    if (activeCategory == Category.MAINS.cat) {
+                        activeCategory = ""
+                        cat.value = ""
+                    } else {
+                        activeCategory = Category.MAINS.cat
+                        cat.value = Category.MAINS.cat
+                        phrase.value = ""
+                    }
+                }) {
                 Text(
                     color = MaterialTheme.colors.primaryVariant,
                     fontWeight = FontWeight.Bold,
@@ -182,10 +223,19 @@ fun Categories() {
             }
 
             Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+                colors = ButtonDefaults.buttonColors(backgroundColor = if (activeCategory !== Category.DESSERTS.cat) Color.LightGray else MaterialTheme.colors.onPrimary),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 shape = RoundedCornerShape(20.dp),
-                onClick = { /*TODO*/ }) {
+                onClick = {
+                    if (activeCategory == Category.DESSERTS.cat) {
+                        activeCategory = ""
+                        cat.value = ""
+                    } else {
+                        activeCategory = Category.DESSERTS.cat
+                        cat.value = Category.DESSERTS.cat
+                        phrase.value = ""
+                    }
+                }) {
                 Text(
                     color = MaterialTheme.colors.primaryVariant,
                     fontWeight = FontWeight.Bold,
@@ -194,10 +244,20 @@ fun Categories() {
             }
 
             Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+                colors = ButtonDefaults.buttonColors(backgroundColor = if (activeCategory !== Category.DRINKS.cat) Color.LightGray else MaterialTheme.colors.onPrimary),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 shape = RoundedCornerShape(20.dp),
-                onClick = { /*TODO*/ }) {
+                onClick = {
+                    if (activeCategory == Category.DRINKS.cat) {
+                        activeCategory = ""
+                        cat.value = ""
+                    } else {
+                        activeCategory = Category.DRINKS.cat
+                        cat.value = Category.DRINKS.cat
+                        phrase.value = ""
+                    }
+
+                }) {
                 Text(
                     color = MaterialTheme.colors.primaryVariant,
                     fontWeight = FontWeight.Bold,

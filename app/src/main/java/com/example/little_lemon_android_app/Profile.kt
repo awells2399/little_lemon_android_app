@@ -8,8 +8,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -21,12 +19,10 @@ import androidx.navigation.NavController
 @Composable
 fun Profile(navController: NavController, userPrefs: SharedPreferences) {
 
-    var firstName: String = userPrefs.getString("First Name", "").toString()
-    var lastName: String = userPrefs.getString("Last Name", "").toString()
-    var email: String = userPrefs.getString("Email", "").toString()
-    var changingProfile = rememberSaveable() {
-        mutableStateOf(false)
-    }
+    val firstName: String = userPrefs.getString("First Name", "").toString()
+    val lastName: String = userPrefs.getString("Last Name", "").toString()
+    val email: String = userPrefs.getString("Email", "").toString()
+
 
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
@@ -96,7 +92,7 @@ private fun logout(userPrefs: SharedPreferences, navController: NavController) {
 
 }
 
-private fun changeProfile(input: String, userPrefs: SharedPreferences, key: String) {
-    userPrefs.edit().putString(key, input)
-}
+//private fun changeProfile(input: String, userPrefs: SharedPreferences, key: String) {
+//    userPrefs.edit().putString(key, input)
+//}
 

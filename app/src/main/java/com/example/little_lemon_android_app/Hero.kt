@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun Hero() {
+fun Hero(searchPhrase: MutableState<String>) {
     val restaurantName = stringResource(id = R.string.restaurant_name)
     val restaurantDescription = stringResource(id = R.string.restaurant_description)
     val restaurantCity = stringResource(id = R.string.restaurant_city)
@@ -75,14 +76,15 @@ fun Hero() {
                     .height(73.dp)
                     .padding(top = 10.dp, bottom = 10.dp)
                     .align(Alignment.CenterHorizontally),
-                value = "Enter Search Phrase",
+                value = searchPhrase.value,
+                placeholder = { Text(text = "Enter Search Phrase") },
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.White,
                     cursorColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
-                onValueChange = {},
+                onValueChange = { searchPhrase.value = it },
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
                 leadingIcon = {
